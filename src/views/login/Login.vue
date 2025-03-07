@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router'
 import { getCode } from '@/services/user'
 import { useUserStore } from '@/stores/index'
 import { ElMessage } from 'element-plus'
@@ -12,7 +13,10 @@ const loginForm = reactive({
 
 let isLoading = false
 const onLogin = async () => {
+  if (!loginForm.mobile) return ElMessage.error('请输入手机号')
+  if (!loginForm.code) return ElMessage.error('请输入验证码')
   await userStore.fetchToken(loginForm)
+  router.push('/')
 }
 
 const codeText = ref('获取验证码')

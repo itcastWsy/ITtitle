@@ -24,6 +24,21 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/dashboard/Dashboard.vue'),
         meta: { title: '数据统计', icon: 'Histogram' },
       },
+      {
+        path: '/article',
+        name: 'Article',
+        redirect: '/article/index',
+      },
+      {
+        path: '/article/index',
+        name: 'ArticleIndex',
+        component: () => import('@/views/article/Index.vue'),
+      },
+      {
+        path: '/article/add',
+        name: 'ArticleAdd',
+        component: () => import('@/views/article/Add.vue'),
+      },
     ],
   },
 ]
