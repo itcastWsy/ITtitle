@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { getCode } from '@/services/user'
+import { useUserStore } from '@/stores/index'
 import { ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
+const userStore = useUserStore()
 
 const loginForm = reactive({
-  mobile: '',
+  mobile: '18612345678',
   code: '',
 })
 
 let isLoading = false
-const onLogin = () => {}
+const onLogin = async () => {
+  await userStore.fetchToken(loginForm)
+}
 
 const codeText = ref('获取验证码')
 const onGetCode = () => {

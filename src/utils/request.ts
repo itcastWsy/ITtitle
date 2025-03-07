@@ -1,5 +1,5 @@
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import type { LoadingInstance } from 'element-plus/lib/components/loading/src/loading.js'
 
 // 创建axios实例
@@ -30,7 +30,11 @@ request.interceptors.response.use(
     loadingInstance1?.close()
     return response.data
   },
-  (error: AxiosError) => {
+  (error: AxiosError<{ data: null; message: string }>) => {
+    console.log(error)
+
+    ElMessage.error(error?.response?.data?.message)
+
     loadingInstance1?.close()
     return Promise.reject(error)
   },
