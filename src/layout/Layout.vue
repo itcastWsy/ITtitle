@@ -5,11 +5,9 @@
         <el-col :span="4"><div class="title">博客后台管理系统</div></el-col>
         <el-col :offset="16" :span="4">
           <div class="user">
-            <el-avatar
-              :size="50"
-              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-            />
-            <span>管理员</span>
+            <el-avatar :size="50" :src="userStore.userProfile.photo" />
+            <span>{{ userStore.userProfile.name }}</span>
+            <span class="logout" @click="onLogout">退出</span>
           </div>
         </el-col>
       </el-row>
@@ -26,6 +24,20 @@
 </template>
 <script setup lang="ts">
 import LeftMenu from '@/layout/LeftMenu.vue'
+import router from '@/router'
+import { useUserStore } from '@/stores'
+import { ElMessageBox } from 'element-plus'
+import { onMounted } from 'vue'
+const userStore = useUserStore()
+
+onMounted(() => {
+  userStore.fetchUserProfile()
+})
+const onLogout = async () => {
+  await ElMessageBox.confirm('您确定退出吗？')
+  userStore.logout()
+  router.replace('/login')
+}
 </script>
 <style lang="scss" scoped>
 .layout-page {
@@ -58,5 +70,13 @@ import LeftMenu from '@/layout/LeftMenu.vue'
     margin-left: 10px;
     color: #fff;
   }
+  .logout {
+    cursor: pointer;
+    color: #0094ff;
+  }
+}
+.layout-right {
+  flex: 1;
+  height: 100%;
 }
 </style>

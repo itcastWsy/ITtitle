@@ -1,3 +1,4 @@
+import { useUserStore } from '@/stores'
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import { ElLoading, ElMessage } from 'element-plus'
 import type { LoadingInstance } from 'element-plus/lib/components/loading/src/loading.js'
@@ -12,8 +13,7 @@ let loadingInstance1: LoadingInstance | null = null
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     loadingInstance1 = ElLoading.service({ fullscreen: true })
-    // 从localStorage获取token
-    const token = localStorage.getItem('token')
+    const token = useUserStore().token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
