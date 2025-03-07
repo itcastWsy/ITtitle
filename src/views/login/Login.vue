@@ -1,4 +1,36 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getCode } from '@/services/user'
+import { ElMessage } from 'element-plus'
+import { reactive, ref } from 'vue'
+
+const loginForm = reactive({
+  mobile: '',
+  code: '',
+})
+
+let isLoading = false
+const onLogin = () => {}
+
+const codeText = ref('获取验证码')
+const onGetCode = () => {
+  if (loginForm.mobile.length !== 11) return ElMessage.error('请输入正确的手机号')
+
+  if (isLoading) return
+  isLoading = true
+  let times = 60
+
+  const tid = setInterval(() => {
+    times--
+    codeText.value = times + 's' + '重新发送'
+    if (times <= 0) {
+      clearTimeout(tid)
+      codeText.value = '获取验证码'
+      isLoading = false
+    }
+  }, 1000)
+  getCode('18612345678')
+}
+</script>
 
 <template>
   <div class="login-page">
@@ -6,18 +38,18 @@
       <div class="title">黑马头条后台管理系统</div>
       <el-form label-width="80px" class="login-form">
         <el-form-item label="手机号码">
-          <el-input></el-input>
+          <el-input v-model="loginForm.mobile"></el-input>
         </el-form-item>
         <el-form-item label="验证码">
-          <el-input>
+          <el-input v-model="loginForm.code">
             <template v-slot:append>
-              <span class="code-btn">获取验证码</span>
+              <span class="code-btn" @click="onGetCode">{{ codeText }}</span>
             </template>
           </el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click="onLogin">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
