@@ -4,11 +4,13 @@ import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IEditorConfig } from '@wangeditor/editor'
-import { getChannels, publishArticle, uploadImage } from '@/services/article'
+import { getChannels, publishArticle, updateArticle, uploadImage } from '@/services/article'
 import type { Channels, NewArticle } from '@/types'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
-
+import { useRoute } from 'vue-router'
+import { getDetailById } from '@/services/user'
+const route = useRoute()
 const channels = ref<Channels[]>([])
 
 const form = ref<NewArticle>({
@@ -44,7 +46,13 @@ const valueHtml = ref('<p>hello</p>')
 onMounted(async () => {
   const res = await getChannels()
   channels.value = res
-  console.log(res)
+  const data = route.params
+  if (data.id) {
+    const res = await getDetailById(data.id as string)
+    form.value = res
+
+    editorRef.value.setHtml(res.content)
+  }
 })
 
 const toolbarConfig = {}
@@ -62,10 +70,16 @@ const handleCreated = (editor) => {
 const onPublish = async () => {
   form.value.content = editorRef.value.getHtml()
   form.value.cover = { images: [], type: 0 }
-  // 验证表单合法性
-  await publishArticle(form.value)
 
-  ElMessage.success('发布成功')
+  if (route.params.id) {
+    // 编辑
+    await updateArticle(form.value, route.params.id as string)
+  } else {
+    // 验证表单合法性
+    await publishArticle(form.value)
+  }
+
+  ElMessage.success('操作成功')
   router.back()
 }
 </script>

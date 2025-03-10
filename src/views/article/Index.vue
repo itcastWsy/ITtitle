@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import router from '@/router'
-import { getArticles } from '@/services/article'
+import { deleteArticle, getArticles } from '@/services/article'
 import type { ArticleItem, ArticleParam } from '@/types'
 import { ArticleStatusMap } from '@/utils'
 import dayjs from 'dayjs'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { onMounted, reactive, ref, watch } from 'vue'
 dayjs.locale('zh-cn')
 
@@ -32,6 +33,14 @@ const onSearch = async () => {
 onMounted(() => {
   onSearch()
 })
+
+const onDelete = (id: string) => {
+  ElMessageBox.confirm('确认删除该文章吗?').then(async () => {
+    await deleteArticle(id)
+    ElMessage.success('删除成功')
+    onSearch()
+  })
+}
 </script>
 
 <template>
@@ -83,7 +92,7 @@ onMounted(() => {
           <el-button type="primary" @click="router.push(`/article/add/${scope.row.id}`)"
             >编辑</el-button
           >
-          <el-button type="danger">删除</el-button>
+          <el-button type="danger" @click="onDelete(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

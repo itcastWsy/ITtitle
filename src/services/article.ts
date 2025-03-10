@@ -17,3 +17,10 @@ export const getChannels = async () => {
 export const publishArticle = (data: NewArticle) => {
   return request.post<NewArticle, null>('/mp/articles', data)
 }
+
+export const updateArticle = (data: NewArticle, id: string) => {
+  return request.put<NewArticle, null>('/mp/articles/' + id, data)
+}
+export const deleteArticle = (id: string) => {
+  return request.delete<null, null>('/mp/articles/' + id)
+}

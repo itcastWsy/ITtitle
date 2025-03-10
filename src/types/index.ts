@@ -59,6 +59,7 @@ export type Channels = {
 }
 
 export type NewArticle = {
+  id?: string
   title: string
   content: string
   channel_id: number
