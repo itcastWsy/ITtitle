@@ -51,3 +51,16 @@ export type ArticleData = {
   results: ArticleItem[] // 文章项数组
   total_count: number // 文章总数
 }
+
+// 频道
+export type Channels = {
+  id: string
+  name: string
+}
+
+export type NewArticle = {
+  title: string
+  content: string
+  channel_id: number
+  cover: { type: number; images: [] }
+}

@@ -4,7 +4,18 @@ import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IEditorConfig } from '@wangeditor/editor'
-import { uploadImage } from '@/services/article'
+import { getChannels, publishArticle, uploadImage } from '@/services/article'
+import type { Channels, NewArticle } from '@/types'
+
+const channels = ref<Channels[]>([])
+
+const form = ref<NewArticle>({
+  title: '',
+  channel_id: 0,
+  content: '',
+  cover: { images: [], type: 0 },
+})
+
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
 
@@ -19,14 +30,7 @@ const editorConfig: Partial<IEditorConfig> = {
 editorConfig.MENU_CONF!['uploadImage'] = {
   server: '/upload',
   async customUpload(file: File, insertFn: InsertFnType) {
-    // TS 语法
-    // async customUpload(file, insertFn) {                   // JS 语法
-    // file 即选中的文件
-    // 自己实现上传，并得到图片 url alt href
-    // 最后插入图片
-    // insertFn(url, alt, href)
     const res = await uploadImage(file)
-
     insertFn(res.url, '', '')
     console.log('rrr', res)
   },
@@ -35,10 +39,10 @@ editorConfig.MENU_CONF!['uploadImage'] = {
 const valueHtml = ref('<p>hello</p>')
 
 // 模拟 ajax 异步获取内容
-onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
-  }, 1500)
+onMounted(async () => {
+  const res = await getChannels()
+  channels.value = res
+  console.log(res)
 })
 
 const toolbarConfig = {}
@@ -53,30 +57,62 @@ onBeforeUnmount(() => {
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
-const onPublish = () => {
-  console.log('valueHtml', editorRef.value.getHtml())
+const onPublish = async () => {
+  form.value.content = editorRef.value.getHtml()
+  form.value.cover = { images: [], type: 0 }
+  // 验证表单合法性
+  console.log(form.value)
+  await publishArticle(form.value)
 }
 </script>
 
 <template>
-  <div class="ddd-page">
-    <el-button @click="onPublish">发布</el-button>
+  <div class="article-add-page">
+    <div class="tool">
+      <el-button type="primary" @click="onPublish">发布</el-button>
+    </div>
+    <div class="form">
+      <el-form>
+        <!-- 标题 -->
+        <el-form-item label="标题">
+          <el-input placeholder="标题" v-model="form.title"></el-input>
+        </el-form-item>
+        <!-- 频道 -->
+        <el-form-item label="频道">
+          <el-select placeholder="请选择频道" v-model="form.channel_id">
+            <el-option
+              v-for="item in channels"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 分类 -->
+        <!-- 封面 -->
+      </el-form>
+    </div>
     <div style="border: 1px solid #ccc">
       <Toolbar
         style="border-bottom: 1px solid #ccc"
         :editor="editorRef"
         :defaultConfig="toolbarConfig"
-        :mode="mode"
       />
       <Editor
         style="height: 500px; overflow-y: hidden"
         v-model="valueHtml"
         :defaultConfig="editorConfig"
-        :mode="mode"
         @onCreated="handleCreated"
       />
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.article-add-page {
+  padding: 20px;
+  .tool {
+    padding: 20px 0;
+  }
+}
+</style>
