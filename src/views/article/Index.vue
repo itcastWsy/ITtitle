@@ -2,7 +2,10 @@
 import router from '@/router'
 import { getArticles } from '@/services/article'
 import type { ArticleItem, ArticleParam } from '@/types'
+import { ArticleStatusMap } from '@/utils'
+import dayjs from 'dayjs'
 import { onMounted, reactive, ref, watch } from 'vue'
+dayjs.locale('zh-cn')
 
 const form = reactive<ArticleParam>({
   status: '',
@@ -16,8 +19,8 @@ const tableData = ref<ArticleItem[]>([])
 const dateArr = ref<Date[]>([])
 watch(dateArr, () => {
   if (dateArr.value.length === 2) {
-    form.begin_pubdate = dateArr.value[0].getTime().toString()
-    form.end_pubdate = dateArr.value[1].getTime().toString()
+    form.begin_pubdate = dayjs(dateArr.value[0]).format('YYYY-MM-DD')
+    form.end_pubdate = dayjs(dateArr.value[1]).format('YYYY-MM-DD')
   }
 })
 
@@ -63,21 +66,16 @@ onMounted(() => {
     </el-form>
 
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column type="index" label="序号" />
+      <el-table-column type="index" label="序号" width="80px" />
       <el-table-column prop="title" label="标题" />
-      <el-table-column prop="status" label="状态" />
-      <el-table-column prop="comment_count" label="评论数" />
-      <el-table-column prop="pubdate" label="发布时间" />
-      <el-table-column label="封面">
+      <el-table-column label="状态">
         <template #default="scope">
-          <img
-            v-if="scope.row.cover.type !== '0'"
-            :src="scope.row.cover.images"
-            style="width: 100px; height: auto"
-          />
-          <span v-else>无封面</span>
+          <span>{{ ArticleStatusMap[scope.row.status as keyof typeof ArticleStatusMap] }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="comment_count" label="评论数" />
+      <el-table-column prop="pubdate" label="发布时间" />
+
       <el-table-column prop="like_count" label="点赞数" />
       <el-table-column prop="read_count" label="阅读数" />
     </el-table>

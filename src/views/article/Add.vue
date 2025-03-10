@@ -6,6 +6,8 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import type { IEditorConfig } from '@wangeditor/editor'
 import { getChannels, publishArticle, uploadImage } from '@/services/article'
 import type { Channels, NewArticle } from '@/types'
+import { ElMessage } from 'element-plus'
+import router from '@/router'
 
 const channels = ref<Channels[]>([])
 
@@ -61,8 +63,10 @@ const onPublish = async () => {
   form.value.content = editorRef.value.getHtml()
   form.value.cover = { images: [], type: 0 }
   // 验证表单合法性
-  console.log(form.value)
   await publishArticle(form.value)
+
+  ElMessage.success('发布成功')
+  router.back()
 }
 </script>
 
