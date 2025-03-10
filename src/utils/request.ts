@@ -28,7 +28,7 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response: { data: AxiosResponse }) => {
     loadingInstance1?.close()
-    return response.data
+    return response.data.data
   },
   (error: AxiosError<{ data: null; message: string }>) => {
     console.log(error)
