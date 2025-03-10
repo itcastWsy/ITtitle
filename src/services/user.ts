@@ -7,6 +7,6 @@ export const getCode = async (mobile: string) => {
 export const login = async (data: LoginParams) => {
   return request.post<LoginParams, Response<ResToken>>('/authorizations', data)
 }
-export const getProfile = async () => {
-  return request.get<null, Response<UserProfile>>('/user/profile')
+export const getProfile = () => {
+  return request.get<null, UserProfile>('/user/profile')
 }

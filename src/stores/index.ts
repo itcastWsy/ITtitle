@@ -15,7 +15,8 @@ export const useUserStore = defineStore(
     }
     const fetchUserProfile = async () => {
       const result = await getProfile()
-      userProfile.value = result.data
+
+      userProfile.value = result
     }
     const logout = () => {
       token.value = ''

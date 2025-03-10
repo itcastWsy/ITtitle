@@ -5,8 +5,8 @@
         <el-col :span="4"><div class="title">博客后台管理系统</div></el-col>
         <el-col :offset="16" :span="4">
           <div class="user">
-            <el-avatar :size="50" :src="userStore.userProfile.photo" />
-            <span>{{ userStore.userProfile.name }}</span>
+            <el-avatar :size="50" :src="userStore.userProfile?.photo" />
+            <span>{{ userStore.userProfile?.name }}</span>
             <span class="logout" @click="onLogout">退出</span>
           </div>
         </el-col>
@@ -30,8 +30,9 @@ import { ElMessageBox } from 'element-plus'
 import { onMounted } from 'vue'
 const userStore = useUserStore()
 
-onMounted(() => {
-  userStore.fetchUserProfile()
+onMounted(async () => {
+  await userStore.fetchUserProfile()
+  console.log(userStore.token)
 })
 const onLogout = async () => {
   await ElMessageBox.confirm('您确定退出吗？')
