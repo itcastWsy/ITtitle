@@ -24,9 +24,10 @@ watch(dateArr, () => {
     form.end_pubdate = dayjs(dateArr.value[1]).format('YYYY-MM-DD')
   }
 })
-
+const total = ref(1)
 const onSearch = async () => {
   const res = await getArticles(form)
+  total.value = res.total_count
   tableData.value = res.results
 }
 
@@ -38,8 +39,15 @@ const onDelete = (id: string) => {
   ElMessageBox.confirm('确认删除该文章吗?').then(async () => {
     await deleteArticle(id)
     ElMessage.success('删除成功')
+    if (tableData.value.length === 0 && form.page > 1) {
+      form.page--
+    }
     onSearch()
   })
+}
+const onPageChange = (page: number) => {
+  form.page = page
+  onSearch()
 }
 </script>
 
@@ -96,6 +104,10 @@ const onDelete = (id: string) => {
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <el-pagination @current-change="onPageChange" layout="prev, pager, next" :total="total">
+    </el-pagination>
   </div>
 </template>
 
