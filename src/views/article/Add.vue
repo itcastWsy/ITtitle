@@ -3,7 +3,8 @@ import '@wangeditor/editor/dist/css/style.css' // 引入 css
 
 import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import type { IEditorConfig } from '@wangeditor/editor'
+// @ts-expect-error 解决模块导出成员问题
+import type { IDomEditor } from '@wangeditor/editor'
 import { getChannels, publishArticle, updateArticle, uploadImage } from '@/services/article'
 import type { Channels, NewArticle } from '@/types'
 import { ElMessage } from 'element-plus'
@@ -22,6 +23,22 @@ const form = ref<NewArticle>({
 
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
+
+// 定义InsertFnType类型
+type InsertFnType = (url: string, alt: string, href: string) => void
+
+// 定义编辑器配置项类型
+interface MenuConfItem {
+  server?: string;
+  customUpload?: (file: File, insertFn: InsertFnType) => Promise<void>;
+  [key: string]: unknown;
+}
+
+// 定义IEditorConfig接口
+interface IEditorConfig {
+  MENU_CONF?: Record<string, MenuConfItem>;
+  [key: string]: unknown;
+}
 
 // 初始化 MENU_CONF 属性
 const editorConfig: Partial<IEditorConfig> = {
@@ -64,7 +81,7 @@ onBeforeUnmount(() => {
   editor.destroy()
 })
 
-const handleCreated = (editor) => {
+const handleCreated = (editor: IDomEditor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
 const onPublish = async () => {
