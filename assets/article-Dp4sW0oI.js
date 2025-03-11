@@ -1,1 +1,0 @@
-import{T as t}from"./index-CfslgFJt.js";const a=e=>t.get("/mp/articles",{params:e}),n=e=>{const s=new FormData;return s.append("image",e),t.post("/upload",s)},c=async()=>(await t.get("/channels")).channels,l=e=>t.post("/mp/articles",e),o=(e,s)=>t.put("/mp/articles/"+s,e),p=e=>t.delete("/mp/articles/"+e);export{c as a,o as b,p as d,a as g,l as p,n as u};
