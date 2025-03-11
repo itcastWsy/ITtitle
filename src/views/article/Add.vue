@@ -29,15 +29,15 @@ type InsertFnType = (url: string, alt: string, href: string) => void
 
 // 定义编辑器配置项类型
 interface MenuConfItem {
-  server?: string;
-  customUpload?: (file: File, insertFn: InsertFnType) => Promise<void>;
-  [key: string]: unknown;
+  server?: string
+  customUpload?: (file: File, insertFn: InsertFnType) => Promise<void>
+  [key: string]: unknown
 }
 
 // 定义IEditorConfig接口
 interface IEditorConfig {
-  MENU_CONF?: Record<string, MenuConfItem>;
-  [key: string]: unknown;
+  MENU_CONF?: Record<string, MenuConfItem>
+  [key: string]: unknown
 }
 
 // 初始化 MENU_CONF 属性
@@ -149,5 +149,7 @@ const onPublish = async () => {
   .tool {
     padding: 20px 0;
   }
+  height: 100%;
+  overflow: auto;
 }
 </style>

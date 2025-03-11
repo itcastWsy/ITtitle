@@ -10,7 +10,7 @@ export const useUserStore = defineStore(
     const userProfile = ref<UserProfile>({} as UserProfile)
     const fetchToken = async (data: LoginParams) => {
       const result = await login(data)
-      token.value = result.data.token
+      token.value = result.token
       console.log(token.value)
     }
     const fetchUserProfile = async () => {

@@ -1,18 +1,11 @@
 import request from '@/utils/request'
-import {
-  type ArticleItem,
-  type LoginParams,
-  type NewArticle,
-  type Response,
-  type ResToken,
-  type UserProfile,
-} from '@/types/index'
+import { type LoginParams, type NewArticle, type ResToken, type UserProfile } from '@/types/index'
 
 export const getCode = async (mobile: string) => {
   return request.get('/sms/codes/' + mobile)
 }
 export const login = async (data: LoginParams) => {
-  return request.post<LoginParams, Response<ResToken>>('/authorizations', data)
+  return request.post<LoginParams, ResToken>('/authorizations', data)
 }
 export const getProfile = () => {
   return request.get<null, UserProfile>('/user/profile')

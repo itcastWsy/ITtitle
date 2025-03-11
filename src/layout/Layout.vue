@@ -44,7 +44,7 @@ const onLogout = async () => {
 .layout-page {
   width: 100vw;
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 }
 .layout-top {
   height: 100px;
@@ -54,6 +54,7 @@ const onLogout = async () => {
 .layout-main {
   display: flex;
   height: calc(100vh - 100px);
+  overflow: auto;
 }
 .layout-left {
   width: 200px;
